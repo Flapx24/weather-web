@@ -16,6 +16,12 @@
 </head>
 <body>
     <div class="container my-5">
+        <form class="mb-4" th:action="@{/weather/buscar}" method="get">
+            <div class="input-group">
+                <input type="text" name="city" class="form-control" required>
+                <button class="btn btn-primary" type="submit">Buscar</button>
+            </div>
+        </form>
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <!-- Weather Card -->
@@ -85,7 +91,7 @@
 
                 <!-- Error Alert -->
                 <div class="alert alert-danger text-center" th:if="${weatherData == null}">
-                    No weather data available for the requested city.
+                    No weather data available for the requested city. Please add a city to the search.
                 </div>
             </div>
         </div>

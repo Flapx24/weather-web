@@ -34,7 +34,22 @@ public class WeatherController {
         
         return "current-weather";
     }
-    
+
+    // Endpoint find city
+    @GetMapping("/buscar")
+    public String searchWeather(@RequestParam(required = false) String city, Model model) {
+        if (city != null && !city.isEmpty()) {
+            try {
+                WeatherData weatherData = weatherService.getWeatherByCity(city);
+                model.addAttribute("weatherData", weatherData);
+            } catch (Exception e) {
+                model.addAttribute("error", "City not found" + city);
+            }
+        }
+        return "current-weather";
+    }
+
+
     @GetMapping("/map")
     public String showWeatherMap(
             @RequestParam(required = false, defaultValue = "CLOUDS") String layer,
@@ -102,5 +117,6 @@ public class WeatherController {
         
         return formattedName.toString().trim();
     }
+
 
 }

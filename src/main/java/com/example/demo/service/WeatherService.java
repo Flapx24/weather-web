@@ -6,6 +6,8 @@ import org.springframework.web.client.RestTemplate;
 import com.example.demo.model.WeatherData;
 import com.example.demo.model.MapLayer;
 
+import java.util.List;
+
 @Service("weatherService")
 public class WeatherService {
 
@@ -27,5 +29,11 @@ public class WeatherService {
             "https://tile.openweathermap.org/map/%s/%d/%d/%d.png?appid=%s",
             layer.getValue(), z, x, y, apiKey
         );
+    }
+
+    public WeatherData getWeatherDaily(double lat, double lon, String date) {
+        String url = String.format(baseUrl + "/forecast?lat=" + lat + "&lon=" + lon + "&appId=" + apiKey + "&units=metric&lang=es");
+        WeatherData data = restTemplate.getForObject(url, WeatherData.class);
+        return data;
     }
 }
