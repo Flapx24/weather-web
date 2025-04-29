@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Information</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/weather-styles.css}">
+</head>
+<body>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="weather-card bg-white" th:if="${weatherData != null}">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1 th:text="${weatherData.name} + ', ' + ${weatherData.sys.country}">City Name</h1>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <img class="weather-icon" 
+                                     th:src="'https://openweathermap.org/img/wn/' + ${weatherData.weather[0].icon} + '@2x.png'" 
+                                     alt="Weather Icon"/>
+                                <div class="ms-3">
+                                    <span class="temp-big" th:text="${#numbers.formatDecimal(weatherData.main.temp, 0, 1)} + '°C'">0°C</span>
+                                    <div th:text="${weatherData.weather[0].description}">Weather Description</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="details-item">
+                                <strong>Feels Like:</strong> <span th:text="${#numbers.formatDecimal(weatherData.main.feels_like, 0, 1)} + '°C'">0°C</span>
+                            </div>
+                            <div class="details-item">
+                                <strong>Min Temp:</strong> <span th:text="${#numbers.formatDecimal(weatherData.main.temp_min, 0, 1)} + '°C'">0°C</span>
+                            </div>
+                            <div class="details-item">
+                                <strong>Max Temp:</strong> <span th:text="${#numbers.formatDecimal(weatherData.main.temp_max, 0, 1)} + '°C'">0°C</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="details-item">
+                                <strong>Humidity:</strong> <span th:text="${weatherData.main.humidity} + '%'">0%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="details-item">
+                                <strong>Pressure:</strong> <span th:text="${weatherData.main.pressure} + ' hPa'">0 hPa</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="details-item">
+                                <strong>Visibility:</strong> <span th:text="${weatherData.visibility / 1000} + ' km'">0 km</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="details-item">
+                                <strong>Wind:</strong> <span th:text="${#numbers.formatDecimal(weatherData.wind.speed, 0, 1)} + ' m/s'">0 m/s</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="details-item">
+                                <strong>Wind Direction:</strong> <span th:text="${weatherData.wind.deg} + '°'">0°</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="details-item">
+                                <strong>Clouds:</strong> <span th:text="${weatherData.clouds.all} + '%'">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Rain data if available -->
+                    <div class="row mt-4" th:if="${weatherData.rain != null}">
+                        <div class="col-md-4">
+                            <div class="details-item">
+                                <strong>Rain (1h):</strong> <span th:text="${#numbers.formatDecimal(weatherData.rain.oneHour, 0, 1)} + ' mm'">0 mm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-danger" th:if="${weatherData == null}">
+                    No weather data available for the requested city.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

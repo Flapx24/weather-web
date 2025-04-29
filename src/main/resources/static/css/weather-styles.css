@@ -1,0 +1,25 @@
+body {
+    background-color: #4b93daeb;
+}
+
+.weather-card {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.weather-icon {
+    width: 100px;
+    height: 100px;
+}
+
+.temp-big {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.details-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
