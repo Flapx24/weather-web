@@ -12,10 +12,10 @@ import com.example.demo.model.MapLayer;
 @Service("weatherService")
 public class WeatherService {
 
-    @Value("openweathermap.api.key")
+    @Value("fc6fd25a9af0b2c599e354580750f2d2")
     private String apiKey;
 
-    @Value("openweathermap.api.url")
+    @Value("https://api.openweathermap.org")
     private String baseUrl;
 
     private final RestTemplate restTemplate = new RestTemplate();
