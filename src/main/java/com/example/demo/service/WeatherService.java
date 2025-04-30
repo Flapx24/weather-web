@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Coordinates;
+import com.example.demo.model.Geo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -33,7 +35,7 @@ public class WeatherService {
     }
 
     // Method weather diary, 5 days
-    public WeatherData getWeatherDaily(double lat, double lon, String date) {
+    public WeatherData getWeatherDaily(double lat, double lon) {
         String url = String.format(baseUrl + "/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey + "&units=metric&lang=es");
         WeatherData data = restTemplate.getForObject(url, WeatherData.class);
         return data;
@@ -49,4 +51,18 @@ public class WeatherService {
             return null;
         }
     }
+
+    public Coordinates getCityCoordinates(String city) throws Exception {
+        String url = String.format(baseUrl + "/geo/1.0/direct?q=%s&appid=%s", city, apiKey);
+        // Obtiene las coordenadas
+        Geo[] cities = restTemplate.getForObject(url, Geo[].class);
+        // Comprueba si existe la ciudad y obtiene las coordenadas
+        if (cities != null && cities.length > 0) {
+            Geo cityGeo = cities[0];
+            return new Coordinates(cityGeo.getLat(), cityGeo.getLon());
+        } else {
+            throw new Exception("City not found: " + city);
+        }
+    }
+
 }

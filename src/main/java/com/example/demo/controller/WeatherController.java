@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Coordinates;
 import com.example.demo.service.WeatherService;
 import com.example.demo.model.WeatherData;
 import com.example.demo.model.MapLayer;
@@ -118,18 +119,21 @@ public class WeatherController {
         return formattedName.toString().trim();
     }
 
-    @GetMapping("/daily")
-    public String getDailyWeather(@RequestParam(required = false) String city,
-                                  double lat, double lon, Model model) {
-        WeatherData dailyData = weatherService.getWeatherDaily(lat, lon, city);
-        if (dailyData == null) {
-            model.addAttribute("error", "No se pudo obtener el pronóstico");
-        } else {
-            model.addAttribute("forecastData", dailyData);
-            model.addAttribute("city", city);
-        }
+    @GetMapping("/weatherDaily")
+    public String getWeatherDaily(@RequestParam("city") String city, Model model) {
+        try {
+            // Obtiene las coordenadas de la ciudad
+            Coordinates coordinates = weatherService.getCityCoordinates(city);
 
-        return "current_weather";
+            // Obtiene el tiempo de 5 dias
+            WeatherData weatherData = weatherService.getWeatherDaily(coordinates.getLat(), coordinates.getLon());
+            model.addAttribute("weatherData", weatherData);
+            return "current-weather";
+
+        } catch (Exception e) {
+            model.addAttribute("error", "No se pudo obtener el pronóstico para la ciudad: " + city);
+            return "current-weather";
+        }
     }
 
 }
