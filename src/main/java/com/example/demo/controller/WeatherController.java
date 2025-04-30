@@ -45,7 +45,7 @@ public class WeatherController {
                 WeatherData weatherData = weatherService.getWeatherByCity(city);
                 model.addAttribute("weatherData", weatherData);
     
-                // Añadir el pronóstico 5 días
+                // weather 5 days
                 Coordinates coordinates = weatherService.getCityCoordinates(city);
                 ForecastData forecastData = weatherService.getWeatherDaily(coordinates.getLat(), coordinates.getLon());
                 model.addAttribute("forecastData", forecastData);
@@ -128,14 +128,12 @@ public class WeatherController {
     @GetMapping("/weatherDaily")
     public String getWeatherDaily(@RequestParam("city") String city, Model model) {
         try {
-            // Obtener coordenadas a partir del nombre de la ciudad
+            // get coordinates by city name
             Coordinates coordinates = weatherService.getCityCoordinates(city);
-    
-            // Ahora sí: pasar lat y lon al servicio
             ForecastData forecastData = weatherService.getWeatherDaily(coordinates.getLat(), coordinates.getLon());
     
             model.addAttribute("forecastData", forecastData);
-            model.addAttribute("city", city); // Opcional: mostrar nombre de ciudad
+            model.addAttribute("city", city);
             return "current-weather";
     
         } catch (Exception e) {
