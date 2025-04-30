@@ -118,5 +118,18 @@ public class WeatherController {
         return formattedName.toString().trim();
     }
 
+    @GetMapping("/daily")
+    public String getDailyWeather(@RequestParam(required = false) String city,
+                                  double lat, double lon, Model model) {
+        WeatherData dailyData = weatherService.getWeatherDaily(lat, lon, city);
+        if (dailyData == null) {
+            model.addAttribute("error", "No se pudo obtener el pronóstico");
+        } else {
+            model.addAttribute("forecastData", dailyData);
+            model.addAttribute("city", city);
+        }
+
+        return "current_weather";
+    }
 
 }
