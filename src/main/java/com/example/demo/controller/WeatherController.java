@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Coordinates;
+import com.example.demo.model.ForecastData;
 import com.example.demo.service.WeatherService;
 import com.example.demo.model.WeatherData;
 import com.example.demo.model.MapLayer;
@@ -32,7 +33,7 @@ public class WeatherController {
     public String getWeather(@PathVariable String city, Model model) {
         WeatherData weatherData = weatherService.getWeatherByCity(city);
         model.addAttribute("weatherData", weatherData);
-        
+
         return "current-weather";
     }
 
@@ -43,46 +44,52 @@ public class WeatherController {
             try {
                 WeatherData weatherData = weatherService.getWeatherByCity(city);
                 model.addAttribute("weatherData", weatherData);
+    
+                // Añadir el pronóstico 5 días
+                Coordinates coordinates = weatherService.getCityCoordinates(city);
+                ForecastData forecastData = weatherService.getWeatherDaily(coordinates.getLat(), coordinates.getLon());
+                model.addAttribute("forecastData", forecastData);
+    
             } catch (Exception e) {
-                model.addAttribute("error", "City not found" + city);
+                model.addAttribute("error", "City not found: " + city);
             }
         }
         return "current-weather";
     }
-
+    
 
     @GetMapping("/map")
     public String showWeatherMap(
             @RequestParam(required = false, defaultValue = "CLOUDS") String layer,
             Model model) {
-        
+
         MapLayer mapLayer;
         try {
             mapLayer = MapLayer.valueOf(layer.toUpperCase());
         } catch (IllegalArgumentException e) {
             mapLayer = MapLayer.CLOUDS;
         }
-        
+
         model.addAttribute("selectedLayer", mapLayer);
-        
+
         List<Map<String, String>> availableLayers = Arrays.stream(MapLayer.values())
-            .map(l -> {
-                Map<String, String> layerMap = new HashMap<>();
-                layerMap.put("name", l.name());
-                layerMap.put("value", l.getValue());
-                layerMap.put("displayName", formatLayerName(l.name()));
-                return layerMap;
-            })
-            .collect(Collectors.toList());
-        
+                .map(l -> {
+                    Map<String, String> layerMap = new HashMap<>();
+                    layerMap.put("name", l.name());
+                    layerMap.put("value", l.getValue());
+                    layerMap.put("displayName", formatLayerName(l.name()));
+                    return layerMap;
+                })
+                .collect(Collectors.toList());
+
         model.addAttribute("availableLayers", availableLayers);
-        
+
         model.addAttribute("tileUrlTemplate", "/weather/map/{layer}/{z}/{x}/{y}");
-        
+
         model.addAttribute("defaultLat", 40.416775); // Madrid coordinates
         model.addAttribute("defaultLon", -3.703790);
         model.addAttribute("defaultZoom", 5);
-        
+
         return "weather-map";
     }
 
@@ -92,14 +99,14 @@ public class WeatherController {
             @PathVariable int z,
             @PathVariable int x,
             @PathVariable int y) {
-        
+
         MapLayer mapLayer;
         try {
             mapLayer = MapLayer.valueOf(layer.toUpperCase());
         } catch (IllegalArgumentException e) {
             mapLayer = MapLayer.CLOUDS;
         }
-        
+
         String tileUrl = weatherService.getWeatherMapTileUrl(mapLayer, z, x, y);
         return "redirect:" + tileUrl;
     }
@@ -107,33 +114,35 @@ public class WeatherController {
     private String formatLayerName(String layerName) {
         String[] words = layerName.toLowerCase().split("_");
         StringBuilder formattedName = new StringBuilder();
-        
+
         for (String word : words) {
             if (word.length() > 0) {
                 formattedName.append(Character.toUpperCase(word.charAt(0)))
-                             .append(word.substring(1))
-                             .append(" ");
+                        .append(word.substring(1))
+                        .append(" ");
             }
         }
-        
+
         return formattedName.toString().trim();
     }
-
     @GetMapping("/weatherDaily")
     public String getWeatherDaily(@RequestParam("city") String city, Model model) {
         try {
-            // Obtiene las coordenadas de la ciudad
+            // Obtener coordenadas a partir del nombre de la ciudad
             Coordinates coordinates = weatherService.getCityCoordinates(city);
-
-            // Obtiene el tiempo de 5 dias
-            WeatherData weatherData = weatherService.getWeatherDaily(coordinates.getLat(), coordinates.getLon());
-            model.addAttribute("weatherData", weatherData);
+    
+            // Ahora sí: pasar lat y lon al servicio
+            ForecastData forecastData = weatherService.getWeatherDaily(coordinates.getLat(), coordinates.getLon());
+    
+            model.addAttribute("forecastData", forecastData);
+            model.addAttribute("city", city); // Opcional: mostrar nombre de ciudad
             return "current-weather";
-
+    
         } catch (Exception e) {
             model.addAttribute("error", "No se pudo obtener el pronóstico para la ciudad: " + city);
             return "current-weather";
         }
     }
-
+    
+    
 }

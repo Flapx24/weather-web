@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.model.Coordinates;
+import com.example.demo.model.ForecastData;
 import com.example.demo.model.Geo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,26 +24,26 @@ public class WeatherService {
 
     // Method weather by city
     public WeatherData getWeatherByCity(String city) {
-        String url = String.format(baseUrl + "/data/2.5/weather?q=" + city + "&appid=" + apiKey + "&units=metric&lang=es");
+        String url = String
+                .format(baseUrl + "/data/2.5/weather?q=" + city + "&appid=" + apiKey + "&units=metric&lang=es");
         return restTemplate.getForObject(url, WeatherData.class);
     }
 
     // Method weather map
     public String getWeatherMapTileUrl(MapLayer layer, int z, int x, int y) {
         return String.format(baseUrl + "/map/%s/%d/%d/%d.png?appid=%s",
-            layer.getValue(), z, x, y, apiKey
-        );
+                layer.getValue(), z, x, y, apiKey);
     }
 
-    // Method weather diary, 5 days
-    public WeatherData getWeatherDaily(double lat, double lon) {
+    public ForecastData getWeatherDaily(double lat, double lon) {
         String url = String.format(baseUrl + "/data/2.5/forecast?lat=" + lat + "&lon=" + lon + "&appid=" + apiKey + "&units=metric&lang=es");
-        WeatherData data = restTemplate.getForObject(url, WeatherData.class);
-        return data;
+        return restTemplate.getForObject(url, ForecastData.class);
     }
+    
 
     public WeatherData getWeatherGeo(String city) {
-        String url = String.format(baseUrl + "/geo/1.0/direct?q=" + city + "&appid=" + apiKey + "&units=metric&lang=es");
+        String url = String
+                .format(baseUrl + "/geo/1.0/direct?q=" + city + "&appid=" + apiKey + "&units=metric&lang=es");
         WeatherData[] response = restTemplate.getForObject(url, WeatherData[].class);
 
         if (response != null && response.length > 0) {
