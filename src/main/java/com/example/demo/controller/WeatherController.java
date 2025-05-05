@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,24 +40,28 @@ public class WeatherController {
 
     // Endpoint find city
     @GetMapping("/buscar")
-    public String searchWeather(@RequestParam(required = false) String city, Model model) {
+    public String searchWeather(@RequestParam(required = false) String city, Model model,
+            RedirectAttributes redirectAttributes) {
         if (city != null && !city.isEmpty()) {
+            WeatherData weatherData = null;
+
             try {
-                WeatherData weatherData = weatherService.getWeatherByCity(city);
+                weatherData = weatherService.getWeatherByCity(city);
                 model.addAttribute("weatherData", weatherData);
-    
+
                 // weather 5 days
                 Coordinates coordinates = weatherService.getCityCoordinates(city);
                 ForecastData forecastData = weatherService.getWeatherDaily(coordinates.getLat(), coordinates.getLon());
                 model.addAttribute("forecastData", forecastData);
-    
+
             } catch (Exception e) {
-                model.addAttribute("error", "City not found: " + city);
+                redirectAttributes.addFlashAttribute("error", "Ciudad no encontrada");
+                return "redirect:/weather/buscar";
             }
+
         }
         return "current-weather";
     }
-    
 
     @GetMapping("/map")
     public String showWeatherMap(
@@ -125,22 +130,22 @@ public class WeatherController {
 
         return formattedName.toString().trim();
     }
+
     @GetMapping("/weatherDaily")
     public String getWeatherDaily(@RequestParam("city") String city, Model model) {
         try {
             // get coordinates by city name
             Coordinates coordinates = weatherService.getCityCoordinates(city);
             ForecastData forecastData = weatherService.getWeatherDaily(coordinates.getLat(), coordinates.getLon());
-    
+
             model.addAttribute("forecastData", forecastData);
             model.addAttribute("city", city);
             return "current-weather";
-    
+
         } catch (Exception e) {
             model.addAttribute("error", "No se pudo obtener el pronóstico para la ciudad: " + city);
             return "current-weather";
         }
     }
-    
-    
+
 }
