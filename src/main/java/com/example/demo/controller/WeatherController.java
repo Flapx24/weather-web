@@ -29,6 +29,7 @@ public class WeatherController {
     @Autowired
     @Qualifier("weatherService")
     private WeatherService weatherService;
+    
 
     @GetMapping("/{city}")
     public String getWeather(@PathVariable String city, Model model) {
