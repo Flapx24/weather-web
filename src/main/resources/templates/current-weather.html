@@ -99,34 +99,29 @@
                 <div th:if="${forecastData != null and forecastData.list != null}">
                     <h2 class="text-center mb-4">Pronóstico para los próximos 5 días</h2>
                     <p class="text-center"> Intervalos de 3 horas</p>
-                    <div id="forecastCarousel" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item" th:classappend="${iterStat.index == 0} ? 'active'"
-                                th:each="forecast, iterStat : ${forecastData.list}">
-                                <div class="d-flex justify-content-center">
-                                    <div class="forecast-card text-center p-4 bg-light rounded shadow-sm"
-                                        style="width: 200px;">
-                                        <p th:text="${#dates.format(new java.util.Date(forecast.dt * 1000), 'EEEE d MMMM HH:mm')}">Día y hora</p>
-                                        <img th:src="@{'https://openweathermap.org/img/wn/' + ${forecast.weather[0].icon} + '.png'}"
-                                            alt="icono clima" class="mb-2" />
-                                        <p th:text="${#numbers.formatDecimal(forecast.main.temp, 0, 1)} + '°C'">0°C</p>
-                                        <p class="text-capitalize" th:text="${forecast.weather[0].description}">
-                                            Descripción</p>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover text-center align-middle">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Fecha y hora</th>
+                                        <th>Icono</th>
+                                        <th>Temperatura</th>
+                                        <th>Descripción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="forecast : ${forecastData.list}">
+                                        <td th:text="${#dates.format(new java.util.Date(forecast.dt * 1000), 'EEEE d MMM HH:mm')}">Fecha</td>
+                                        <td>
+                                            <img th:src="@{'https://openweathermap.org/img/wn/' + ${forecast.weather[0].icon} + '.png'}"
+                                                alt="icono clima" width="50" />
+                                        </td>
+                                        <td th:text="${#numbers.formatDecimal(forecast.main.temp, 0, 1)} + '°C'">0°C</td>
+                                        <td class="text-capitalize" th:text="${forecast.weather[0].description}">Descripción</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <!-- Carrusel controls -->
-                        <button class="carousel-control-prev" type="button" data-bs-target="#forecastCarousel"
-                            data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Anterior</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#forecastCarousel"
-                            data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Siguiente</span>
-                        </button>
                     </div>
                 </div>
             </div>

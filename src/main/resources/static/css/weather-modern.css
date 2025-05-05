@@ -1,15 +1,27 @@
 :root {
     --primary-color: #4361ee;
+    --primary-light: #5a75f1;
+    --primary-dark: #3a56d4;
     --secondary-color: #3f37c9;
     --accent-color: #4895ef;
+    --accent-light: #5fa4f1;
     --danger-color: #f72585;
     --success-color: #4cc9f0;
     --warning-color: #f8961e;
     --info-color: #43aa8b;
     --text-color: #2b2d42;
     --text-light: #4a4e69;
-    --glass-bg: rgba(255, 255, 255, 0.2);
-    --glass-border: rgba(255, 255, 255, 0.3);
+    --text-lighter: #6c757d;
+    --glass-bg: rgba(255, 255, 255, 0.3);
+    --glass-border: rgba(255, 255, 255, 0.45);
+    --card-shadow: 0 12px 40px rgba(31, 38, 135, 0.2);
+    --neumorphic-shadow: 8px 8px 16px rgba(163, 177, 198, 0.3), 
+                        -8px -8px 16px rgba(255, 255, 255, 0.4);
+    --transition-base: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -20,21 +32,117 @@ body {
     margin: 0;
     padding: 20px;
     background-attachment: fixed;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.background-effect {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: radial-gradient(circle at 20% 50%, rgba(116, 235, 213, 0.2) 0%, rgba(172, 182, 229, 0.1) 100%);
+    animation: gradientShift 15s ease infinite alternate;
+}
+
+.container {
+    max-width: 1200px;
+    padding: 0 15px;
+    position: relative;
+    z-index: 1;
+    transform-style: preserve-3d;
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, 0.85);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    transition: var(--transition-base);
+    box-shadow: inset 2px 2px 5px rgba(163, 177, 198, 0.2),
+                inset -2px -2px 5px rgba(255, 255, 255, 0.5);
+    font-size: 1rem;
+    height: auto;
+}
+
+.form-control:focus {
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3),
+                inset 2px 2px 5px rgba(163, 177, 198, 0.2);
+    border: none;
+    outline: none;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    transition: var(--transition-base);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    box-shadow: var(--neumorphic-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+    opacity: 0;
+    transition: var(--transition-base);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+}
+
+.btn-primary:hover::after {
+    opacity: 1;
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+}
+
+.input-group {
+    box-shadow: var(--card-shadow);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: var(--transition-base);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.input-group:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(31, 38, 135, 0.25);
 }
 
 .weather-card {
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: var(--card-shadow);
     position: relative;
-    background-color: var(--glass-bg);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background: linear-gradient(135deg, var(--glass-bg), rgba(255, 255, 255, 0.2));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    transition: var(--transition-base);
     border: 1px solid var(--glass-border);
     z-index: 2;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+    animation: fadeIn 0.8s ease-out forwards;
 }
 
 .weather-card::before {
@@ -44,120 +152,309 @@ body {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+    background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 70%);
     z-index: -1;
+    animation: gradientPulse 20s ease infinite;
+}
+
+.weather-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, var(--accent-light) 0%, rgba(72, 149, 239, 0) 70%);
+    z-index: -1;
+    opacity: 0.3;
+    animation: float 15s ease-in-out infinite alternate;
 }
 
 .weather-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 50px rgba(31, 38, 135, 0.3);
+}
+
+.weather-icon-container {
+    perspective: 1000px;
+    display: inline-block;
 }
 
 .weather-icon {
-    width: 100px;
-    height: 100px;
-    animation: float 4s ease-in-out infinite;
-    filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.15));
-    transition: all 0.3s ease;
+    width: 120px;
+    height: 120px;
+    animation: float 6s ease-in-out infinite;
+    filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.2));
+    transition: var(--transition-base);
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0.4) 100%);
+    border-radius: 50%;
+    padding: 15px;
+    margin: 0 auto;
+    transform-style: preserve-3d;
+    will-change: transform;
 }
 
 .weather-icon:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.2));
+    transform: scale(1.15) rotateY(15deg);
+    filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.3));
 }
 
 .temp-big {
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    margin: 10px 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    font-size: 4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 15px 0;
+    text-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    line-height: 1;
+    position: relative;
+    display: inline-block;
+}
+
+.temp-big::after {
+    content: '°C';
+    position: absolute;
+    top: 0;
+    right: -30px;
+    font-size: 2rem;
+    background: linear-gradient(135deg, var(--text-light), var(--text-lighter));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .details-item {
-    font-size: 1rem;
-    margin: 10px 0;
+    font-size: 1.05rem;
+    margin: 12px 0;
     color: var(--text-light);
-    padding: 8px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 15px;
+    border-radius: 10px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    transition: var(--transition-base);
+    background: rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.details-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, rgba(67, 97, 238, 0.1), rgba(72, 149, 239, 0.3));
+    transition: width 0.6s ease;
+    z-index: -1;
+}
+
+.details-item:hover {
+    transform: translateX(5px);
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.details-item:hover::before {
+    width: 100%;
 }
 
 .details-item strong {
     color: var(--text-color);
-    font-weight: 500;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.details-item strong i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+h1, h2, h3 {
+    font-weight: 800;
+    color: var(--text-color);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    position: relative;
 }
 
 h1 {
-    font-weight: 700;
-    font-size: 2.5rem;
-    color: var(--text-color);
-    margin-bottom: 5px;
-    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    font-size: 2.8rem;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, var(--text-color), var(--text-light));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+}
+
+h2 {
+    font-size: 2.2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 2px;
+    transform: scaleX(0.7);
+    transform-origin: center;
+    transition: transform 0.4s ease;
+}
+
+h2:hover::after {
+    transform: scaleX(1);
 }
 
 .lead {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     color: var(--text-light);
     font-weight: 400;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.lead::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60%;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--primary-color), var(--accent-color));
+    border-radius: 3px;
 }
 
 .alert {
     border-radius: 12px;
     font-weight: 500;
-    backdrop-filter: blur(10px);
-    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(12px);
+    background-color: rgba(255, 255, 255, 0.45);
+    border: none;
+    box-shadow: var(--card-shadow);
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    animation: shake 0.5s ease-in-out;
 }
 
-/* Animations */
-@keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    25% { transform: translateY(-8px) rotate(2deg); }
-    50% { transform: translateY(0) rotate(0deg); }
-    75% { transform: translateY(-5px) rotate(-2deg); }
+.alert-danger {
+    background-color: rgba(247, 37, 133, 0.25);
+    color: #dc3545;
 }
 
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+.alert i {
+    margin-right: 12px;
+    font-size: 1.5rem;
 }
 
-/* Weather overlays */
-.weather-overlay {
-    position: absolute;
+.table-responsive {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+    backdrop-filter: blur(12px);
+    background-color: var(--glass-bg);
+    margin-bottom: 40px;
+    border: 1px solid var(--glass-border);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.table {
+    margin-bottom: 0;
+    background-color: transparent;
+    color: var(--text-color);
+    --bs-table-bg: transparent;
+}
+
+.table th {
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.25), rgba(72, 149, 239, 0.15));
+    color: var(--text-color);
+    font-weight: 700;
+    border-bottom: 2px solid var(--glass-border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    padding: 15px;
+}
+
+.table td {
+    padding: 15px;
+    vertical-align: middle;
+    border-color: var(--glass-border);
+    font-weight: 500;
+    transition: var(--transition-base);
+}
+
+.table-hover tbody tr:hover td {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: translateX(5px);
+}
+
+.table img {
+    transition: var(--transition-base);
+}
+
+.table tr:hover img {
+    transform: scale(1.2);
+}
+
+.particles {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover;
-    opacity: 0.1;
     z-index: -1;
     pointer-events: none;
 }
 
-.rain-overlay {
-    background-image: url('/images/rain-animated.gif');
-    mix-blend-mode: overlay;
+.particle {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: floatParticle linear infinite;
 }
 
-.cloud-overlay {
-    background-image: url('/images/clouds-animated.gif');
-    mix-blend-mode: soft-light;
+@media (max-width: 992px) {
+    .weather-card {
+        padding: 30px;
+    }
+    
+    h1 {
+        font-size: 2.2rem;
+    }
+    
+    h2 {
+        font-size: 1.8rem;
+    }
+    
+    .temp-big {
+        font-size: 3.2rem;
+    }
+    
+    .temp-big::after {
+        font-size: 1.5rem;
+        right: -25px;
+    }
 }
 
-.sun-overlay {
-    background-image: url('/images/sunny-glow.gif');
-    mix-blend-mode: screen;
-}
-
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .weather-card {
-        padding: 20px;
+        padding: 25px;
     }
     
     .temp-big {
@@ -168,22 +465,144 @@ h1 {
         font-size: 1.8rem;
     }
     
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .weather-icon {
+        width: 90px;
+        height: 90px;
+    }
+    
+    .details-item {
+        font-size: 0.95rem;
+        padding: 8px 12px;
+    }
+    
+    .table td, .table th {
+        padding: 10px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .weather-card {
+        padding: 20px;
+    }
+    
+    .temp-big {
+        font-size: 2.4rem;
+    }
+    
+    .temp-big::after {
+        font-size: 1.2rem;
+        right: -20px;
+    }
+    
     .weather-icon {
         width: 80px;
         height: 80px;
     }
+    
+    .btn-primary {
+        padding: 10px 15px;
+        font-size: 0.8rem;
+    }
+    
+    .form-control {
+        padding: 10px 15px;
+    }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-12px) rotate(3deg); }
+    50% { transform: translateY(0) rotate(0deg); }
+    75% { transform: translateY(-8px) rotate(-3deg); }
+}
+
+@keyframes gradientPulse {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes floatParticle {
+    to { transform: translateY(-100vh); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
 }
 
 .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    border-top-color: var(--primary-color);
-    animation: spin 1s ease-in-out infinite;
-    margin: 20px auto;
+    background: conic-gradient(transparent, var(--primary-color));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 0);
+    mask: radial-gradient(farthest-side, transparent calc(100% - 8px), #000 0);
+    animation: spin 1s linear infinite;
+    margin: 30px auto;
+    position: relative;
+}
+
+.spinner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.3), rgba(255,255,255,0));
+    filter: blur(8px);
 }
 
 @keyframes spin {
     to { transform: rotate(360deg); }
+}
+
+.tooltip-custom {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tooltip-custom::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.tooltip-custom:hover::after {
+    opacity: 1;
+    visibility: visible;
+    bottom: calc(100% + 5px);
 }
